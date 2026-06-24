@@ -7,5 +7,10 @@ export function getSupabase() {
   if (!url || !key) {
     throw new Error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY env vars')
   }
-  return createClient(url, key)
+  // Pass cache: 'no-store' so Next.js never caches Supabase REST calls.
+  return createClient(url, key, {
+    global: {
+      fetch: (input, init = {}) => fetch(input, { ...init, cache: 'no-store' }),
+    },
+  })
 }
