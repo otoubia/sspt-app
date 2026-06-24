@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export default function Home() {
   return (
-    <main className="min-h-screen flex items-center justify-center px-4">
+    <main className="relative min-h-screen flex items-center justify-center px-4">
       <div className="max-w-md w-full space-y-6 text-center">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Shortest Semantic Path Task</h1>
@@ -38,6 +38,10 @@ export default function Home() {
           Start Session
         </Link>
       </div>
+
+      <p className="absolute bottom-4 left-0 right-0 text-center text-xs text-gray-400 px-4">
+        Based on: Toubia, Olivier, and Jonah Berger (2026), &ldquo;Optimally Sequencing Semantic Search Predicts Creativity,&rdquo; forthcoming, <em>PLOS ONE</em>.
+      </p>
     </main>
   )
 }
