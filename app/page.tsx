@@ -40,7 +40,15 @@ export default function Home() {
       </div>
 
       <p className="absolute bottom-4 left-0 right-0 text-center text-xs text-gray-400 px-4">
-        Based on: Toubia, Olivier, and Jonah Berger (2026), &ldquo;Optimally Sequencing Semantic Search Predicts Creativity,&rdquo; forthcoming, <em>PLOS ONE</em>.
+        Based on:{' '}
+        <a
+          href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0352328&?utm_id=plos111&utm_source=internal&utm_medium=email&utm_campaign=author"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-gray-600 transition-colors"
+        >
+          Toubia O, Berger J (2026) Optimally sequencing semantic search predicts creativity. <em>PLoS One</em> 21(6): e0352328.
+        </a>
       </p>
     </main>
   )
