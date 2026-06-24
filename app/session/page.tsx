@@ -30,8 +30,9 @@ export default function SessionPage() {
   const [fetchError, setFetchError] = useState<string | null>(null)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const timers = useRef<(ReturnType<typeof setTimeout> | null)[]>([null, null, null])
+  const usedPairs = useRef<Set<string>>(new Set())
 
-  // ── Fetch a new random word pair ──────────────────────────────────────────
+  // ── Fetch a new random word pair (skips pairs already seen this session) ──
 
   const fetchPair = useCallback(async () => {
     setPhase('loading')
@@ -39,15 +40,23 @@ export default function SessionPage() {
     setValidities(['idle', 'idle', 'idle'])
     setFetchError(null)
     setSubmitError(null)
-    try {
-      const res = await fetch('/api/word-pair')
-      const data = await res.json()
-      if (!res.ok || data.error) throw new Error(data.error ?? 'Failed to load word pair')
-      setPair(data)
-      setPhase('task')
-    } catch (e) {
-      setFetchError(e instanceof Error ? e.message : 'Could not load a word pair.')
+    for (let attempt = 0; attempt < 10; attempt++) {
+      try {
+        const res = await fetch('/api/word-pair')
+        const data = await res.json()
+        if (!res.ok || data.error) throw new Error(data.error ?? 'Failed to load word pair')
+        const key = `${data.word1}|${data.word5}`
+        if (usedPairs.current.has(key)) continue  // already seen — try again
+        usedPairs.current.add(key)
+        setPair(data)
+        setPhase('task')
+        return
+      } catch (e) {
+        setFetchError(e instanceof Error ? e.message : 'Could not load a word pair.')
+        return
+      }
     }
+    setFetchError('Could not find a unique word pair. Please try again.')
   }, [])
 
   useEffect(() => { fetchPair() }, [fetchPair])
@@ -256,7 +265,7 @@ export default function SessionPage() {
           {phase === 'end' && (
             <EndView
               tasks={completedTasks}
-              onRestart={() => { setCompletedTasks([]); fetchPair() }}
+              onRestart={() => { usedPairs.current.clear(); setCompletedTasks([]); fetchPair() }}
             />
           )}
         </div>
